@@ -1,0 +1,40 @@
+import pgzrun
+from random import randint
+
+WIDTH=1600
+HEIGHT=1600
+cheetah=Actor("cheetah")
+cheetah.pos=200,200
+
+gazell=Actor("gazell")
+gazell.pos=800,800
+
+def draw():
+    screen.clear()
+    screen.blit("savana",(0,0))
+
+    cheetah.draw()
+    gazell.draw()
+
+def place_gazell():
+    gazell.x=randint(50,WIDTH-50)
+    gazell.y=randint(50,HEIGHT-50)
+
+
+
+def update():
+    if keyboard.left:
+        cheetah.x=cheetah.x-2
+    if keyboard.right:
+        cheetah.x=cheetah.x+2    
+    if keyboard.up:
+        cheetah.y=cheetah.y-2
+    if keyboard.down:
+        cheetah.y=cheetah.y+2        
+
+    gazell_collected=cheetah.colliderect(gazell)
+    
+    if gazell_collected:
+        place_gazell()
+
+pgzrun.go()
