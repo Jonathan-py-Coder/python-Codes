@@ -8,7 +8,7 @@ pygame.init()
 WIDTH=900
 HEIGHT=700
 
-def change_Backround(img):
+def change_Background(img):
     backround=pygame.image.load(img)
     bg= pygame.transform.scale(backround, (WIDTH,HEIGHT))
     screen.blit(bg,(0, 0))
@@ -39,7 +39,7 @@ class Non_Recycable(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (40, 40))
         self.rect = self.image.get_rect()
 
-images=["item1.png","item2.png","item3.png"]
+images=["New folder/RecycleMarathon/Images/item1.png","New folder/RecycleMarathon/Images/item2.png","New folder/RecycleMarathon/Images/item3.png"]
 items_list=pygame.sprite.Group()
 allsprites = pygame.sprite.Group()
 plastic_list=pygame.sprite.Group()
@@ -65,6 +65,8 @@ text=myFont.render("Score ="+str(0),True,"white")
 
 while playing:
     clock.tick(30)
+    change_Background("New folder/RecycleMarathon/Images/bground.png")
+    allsprites.draw(screen)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             playing = False
@@ -74,12 +76,12 @@ while playing:
     if timeElapsed >=60:
         if score >50:
             text=myFont.render("bin loot succesful", True, " red")
-            change_Backround("New folder/RecycleMarathon/Images/youwin.jpg")
+            change_Background("New folder/RecycleMarathon/Images/youwin.jpg")
         else:
             text=myFont.render("Better Luck Next Time",True,"white")
-            change_Backround("New folder/RecycleMarathon/Images/youlose.jpg")
+            change_Background("New folder/RecycleMarathon/Images/youlose.jpg")
     else:
-        change_Backround("New folder/RecycleMarathon/Images/bground.png")
+        change_Background("New folder/RecycleMarathon/Images/bground.png")
         countdown=timingFont.render("Time Left: "+str(60-int(timeElapsed)),True,"white")
         keys=pygame.key.get_pressed()
         if keys[pygame.K_DOWN]:
@@ -87,14 +89,14 @@ while playing:
                 bin.rect.y +=5
         if keys[pygame.K_UP]:
             if bin.rect.y >0:
-                bin.rect -=5
+                bin.rect.y -=5
 
         if keys[pygame.K_LEFT]:
             if bin.rect.x >0:
-                bin.rect.x-=5
+                bin.rect.x -=5
 
         if keys[pygame.K_RIGHT]:
-            if bin.rect.x <0:
+            if bin.rect.x <850:
                 bin.rect.x+=5
 
         item_hit_list=pygame.sprite.spritecollide(bin, items_list, True)
@@ -110,6 +112,6 @@ while playing:
 
         screen.blit(text,(20,50))
         allsprites.draw(screen)
-    pygame.display.update
+    pygame.display.update()
 
 pygame.quit()
