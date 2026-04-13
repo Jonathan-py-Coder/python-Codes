@@ -31,7 +31,7 @@ while True:
         last_update_time = current_time
 
     # Render updated text
-    font.render(f"Score: {score}", True, (255, 255, 255))
+    text_surface = font.render(f"Score: {score}", True, (255, 255, 255))
     text_surface.get_rect(center=(WIDTH // 2, HEIGHT // 2))
     screen.blit()
     pygame.display.flip()
