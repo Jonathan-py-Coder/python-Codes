@@ -16,13 +16,15 @@ Starttime=time.time()
 
 Running=True
 
-img="MineSweeper/Block.png"
+img=r"MineSweeper/Block.png"
+blockimg=pygame.image.load(img)
 
 class Block(pygame.sprite.Sprite):
      def __init__(self, img, x, y):
           super().__init__()
           self.image=pygame.image.load(img)
           self.image = pygame.transform.scale(self.image, (70,70))
+          self.imagetype ="block"
           self.rect=self.image.get_rect()
           self.rect.x=x
           self.rect.y=y
@@ -46,37 +48,79 @@ for rows in range(10):
           row.append(0)
      matrix.append(row)
 
+def make_mines():
+     for bombs in range(15):
+          row=random.randint(0,9)
+          colum=random.randint(0,9)
+          matrix[row][colum]="M"
+     print(matrix)
 
-for bombs in range(15):
-     row=random.randint(0,9)
-     colum=random.randint(0,9)
-     matrix[row][colum]="M"
-print(matrix)
+make_mines()
+def reset():
+          for row in range(10):
+               for colum in range(10):
+                    matrix[row][colum] = 0
+          for block in BlocksGroup:
+               block.image=blockimg
+          make_mines()
+
+
 
 def mouse_pressed(pos):
      global Running 
 #      for rows in range(10):
 #           for colum in range(10):
 #                if matrix[row][colum]
+
+        
+
      for block in BlocksGroup:
           if block.rect.collidepoint(pos):
                colum=block.rect.x//80
                row=block.rect.y//80-1
                print(row,colum)
-               if matrix[row][colum]=="M":
-                    Running=False
-               else:
-                    mines=0
-                    for r in range(row-1,row+2,1):
-                         if r < 0 or r > 9:
-                              continue
-                         for c in range(colum-1,colum+2,1):
-                              if c < 0 or c > 9:
+               if pygame.mouse.get_pressed()[0]:
+                    if matrix[row][colum]=="M":
+                         block.image=pygame.image.load(r"MineSweeper/bomb_exploded.png")
+                         block.imagetype="mine"
+                         pygame.display.update()
+                         pygame.time.delay(2000)
+                         reset()
+                         return
+
+                    else:
+                         mines=0
+                         for r in range(row-1,row+2,1):
+                              if r < 0 or r > 9:
                                    continue
-                              if matrix[r][c]=="M":
-                                   mines=mines+1
-                    
-                    block.image=pygame.image.load(r"MineSweeper/"+str(mines)+".png")
+                              for c in range(colum-1,colum+2,1):
+                                   if c < 0 or c > 9:
+                                        continue
+                                   if matrix[r][c]=="M":
+                                        mines=mines+1
+                                        
+                         
+                         block.image=pygame.image.load(r"MineSweeper/"+str(mines)+".png")
+                         block.imagetype="numbers"
+               elif pygame.mouse.get_pressed()[2]:
+                    block.image=pygame.image.load(r"MineSweeper/flag.png")
+                    block.imagetype="flag"
+     
+
+def checkend():
+     gamecomplete=True
+     
+     for row in range(10):
+          for colum in range(10):
+               num=row * 10
+               num=num+colum
+               if BlocksGroup.sprites()[num].imagetype == "block":
+                     gamecomplete=False    
+
+     if gamecomplete==True:
+          print("complete")         
+
+                
 
 while Running:
      screen.fill("lightgray")
@@ -87,13 +131,13 @@ while Running:
           if event.type==pygame.MOUSEBUTTONDOWN:
                mousepos=pygame.mouse.get_pos()
                mouse_pressed(mousepos)
-               
+               checkend()
      timetaken = time.time()-Starttime
      
      font=pygame.font.SysFont("Times New Roman",50)
-     scorefont=font.render(f"Score: {score}", True, (255, 255, 255))
+
      timefont=font.render("Time Taken - "+str(round(timetaken,0)),True,(255,255,255))
-     screen.blit(scorefont, (50,20))
+
      screen.blit(timefont, (300, 20))
      pygame.display.update()
     
