@@ -57,12 +57,14 @@ def make_mines():
 
 make_mines()
 def reset():
+          global Starttime
           for row in range(10):
                for colum in range(10):
                     matrix[row][colum] = 0
           for block in BlocksGroup:
                block.image=blockimg
           make_mines()
+          Starttime=time.time()
 
 
 
@@ -105,9 +107,27 @@ def mouse_pressed(pos):
                elif pygame.mouse.get_pressed()[2]:
                     block.image=pygame.image.load(r"MineSweeper/flag.png")
                     block.imagetype="flag"
-     
+
+gamefinished=False
+
+win=True
+def areminesflags():
+     global win
+     win=True
+     for row in range(10):
+          for colum in range(10):
+               if matrix[row][colum]=="M":
+                    if block.imagetype=="flag":
+                         pass
+                    else:
+                         win=False
+               else:
+                    pass
+
+
 
 def checkend():
+     global gamefinished
      gamecomplete=True
      
      for row in range(10):
@@ -118,9 +138,12 @@ def checkend():
                      gamecomplete=False    
 
      if gamecomplete==True:
-          print("complete")         
+          areminesflags()
+          if win==True:
+               print("complete")
+               gamefinished=True         
 
-                
+            
 
 while Running:
      screen.fill("lightgray")
@@ -132,13 +155,14 @@ while Running:
                mousepos=pygame.mouse.get_pos()
                mouse_pressed(mousepos)
                checkend()
-     timetaken = time.time()-Starttime
+     if gamefinished == False:   
+          timetaken = time.time()-Starttime
      
      font=pygame.font.SysFont("Times New Roman",50)
 
      timefont=font.render("Time Taken - "+str(round(timetaken,0)),True,(255,255,255))
 
-     screen.blit(timefont, (300, 20))
+     screen.blit(timefont, (250, 20))
      pygame.display.update()
     
 pygame.quit()
